@@ -30,6 +30,15 @@ app.get('/api/get' , (req, res) => {
     res.send(result)
   })
 })
+// İÇ SATIŞ Query
+
+app.get('/api/get/:departman' , (req, res) => {
+  const sqlSelect = 'SELECT * FROM musteri WHERE departman= "'+req.params.departman+'";'
+  db.query(sqlSelect , (err , result) => {
+    res.send(result)
+  })
+})
+
 // YENİ MÜŞTERİ EKLEME
 app.post('/api/insert' , (req , res ) =>{
   
