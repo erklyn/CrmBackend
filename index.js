@@ -86,7 +86,7 @@ app.get('/api/get/gorusme/:id' , (req, res) => {
   const sqlSelect = 'SELECT * FROM gorusme WHERE musteriID = "'+req.params.id+'"'
   db.query(sqlSelect , (err , result) => {
     res.send(result)
-    console.log(result)
+    
   })
 })
 
