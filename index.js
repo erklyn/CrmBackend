@@ -30,9 +30,51 @@ app.get('/api/get' , (req, res) => {
     res.send(result)
   })
 })
+//TEST 
+app.get('/api/:parametre/:ref' , (req, res) => {
+  const sqlSelect = 'SELECT * FROM musteri WHERE '+req.params.parametre+' = "'+req.params.ref+'"';
+  db.query(sqlSelect , (err , result) => {
+    res.send(result)
+   
+  })
+})
+//MÜŞTERİ ŞEHRİNE GÖRE
+app.get('/api/musteriSehir/:sehir' , (req, res) => {
+  const sqlSelect = 'SELECT * FROM musteri WHERE musteriSehir = "'+req.params.sehir+'"';
+  db.query(sqlSelect , (err , result) => {
+    res.send(result)
+   
+  })
+})
+//MÜŞTERİ ADINA GÖRE
+app.get('/api/musteriUnvani/:isim' , (req, res) => {
+  const sqlSelect = 'SELECT * FROM musteri WHERE musteriUnvani = "'+req.params.isim+'"'
+  db.query(sqlSelect , (err , result) => {
+    res.send(result)
+    
+
+  })
+})
+//MÜŞTERİ ARAÇ TİPİNE GÖRE
+app.get('/api/musteriAracTipi/:arac' , (req, res) => {
+  const sqlSelect = 'SELECT * FROM musteri WHERE musteriAracTipi = "'+req.params.arac+'"'
+  db.query(sqlSelect , (err , result) => {
+    res.send(result)
+    
+
+  })
+})
+//TEMSİLCİMİZ ADI İLE
+app.get('/api/firstName/:isim' , (req, res) => {
+  const sqlSelect = 'SELECT * FROM musteri WHERE firstName >= "'+req.params.isim+'"'
+  db.query(sqlSelect , (err , result) => {
+    res.send(result)
+    
+  })
+})
 // İÇ SATIŞ Query
 
-app.get('/api/get/:departman' , (req, res) => {
+app.get('/api/departman/:departman' , (req, res) => {
   const sqlSelect = 'SELECT * FROM musteri WHERE departman= "'+req.params.departman+'";'
   db.query(sqlSelect , (err , result) => {
     res.send(result)
@@ -64,6 +106,9 @@ app.post('/api/insert' , (req , res ) =>{
     console.log(err)
   });
 })
+
+
+
 
 // SERVER PORT
 app.listen(3001 , () => {
