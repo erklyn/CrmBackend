@@ -30,6 +30,27 @@ app.get('/api/musteriler/:id' , (req, res) => {
 });
 
 
+// TEKLİF QUERY 
+
+app.get('/api/get/teklif/' , (req, res) => {
+  const sqlSelect = 'SELECT * FROM teklif;'
+  
+  db.query(sqlSelect , (err , result) => {
+    res.send(result)
+  });
+});
+
+
+//TEKLİF QUERY WİTH MUSTERİ ID 
+app.get('/api/get/teklif/:id' , (req, res) => {
+  const sqlSelect = 'SELECT * FROM teklif WHERE musteriID= "'+req.params.id+'";'
+  
+  db.query(sqlSelect , (err , result) => {
+    res.send(result)
+  });
+});
+
+
 // TÜM MÜŞTERİLERİ ÇEKME
 
 app.get('/api/get' , (req, res) => {
@@ -129,12 +150,31 @@ app.post('/api/insert/musteri' , (req , res ) =>{
     console.log(err)
   });
 })
-//app.post('/api/insert/isteklifi' , (req , res ) => {
- // GELİŞTİRME SÜRECİNDE
+app.post('/api/insert/teklif' , (req , res ) => {
+  const sqlInsertTeklif = "INSERT INTO teklif (musteriID , temsilciID ,paraBirimi ,odemeSekli , pesinatMiktari, vadeSure, teslimTarihi, teslimYeri , durum, neden , teklifNotu , birimFiyati ,adet , aracTipi) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
 
-//})
+  const musteriID = req.body.values.musteriID
+  const temsilciID = req.body.values.temsilciID
+  const paraBirimi = req.body.values.paraBirimi
+  const odemeSekli = req.body.values.odemeSekli
+  const pesinatMiktari = req.body.values.pesinatMiktari
+  const vadeSure = req.body.values.vadeSure
+  const teslimTarihi = req.body.values.teslimTarihi
+  const teslimYeri = req.body.values.teslimYeri
+  const durum = req.body.values.durum
+  const neden = req.body.values.neden
+  const teklifNotu = req.body.values.not
+  const birimFiyati = req.body.values.birimFiyati
+  const adet = req.body.values.adet
+  const aracTipi = req.body.values.aracTipi
+  
+
+  db.query(sqlInsertTeklif , [musteriID , temsilciID, paraBirimi, odemeSekli, pesinatMiktari,vadeSure,teslimTarihi,teslimYeri, durum, neden, teklifNotu , birimFiyati , adet , aracTipi],(err, result)=>{
+    console.log(err)
+  });
+})
 app.post('/api/insert/temsilci' , (req , res ) => {
-  const sqlInsertMusteri = "INSERT INTO temsilci (adi , soyadi ,departman , mail) VALUES (?,?,?,?);"
+  const sqlInsertTemsilci = "INSERT INTO temsilci (adi , soyadi ,departman , mail) VALUES (?,?,?,?);"
 
   const adi = req.body.values.temsilciAdi
   const soyadi = req.body.values.temsilciSoyadi
