@@ -1,10 +1,11 @@
 const { json } = require("body-parser");
 const { sign, verify } = require("jsonwebtoken");
+require('dotenv').config();
 
 const createAccessToken = (user) => {
   const accessToken = sign(
     { adi: user.adi, id: user.id , departman: user.departman  },
-    "jwtsecretplschange" , {
+    process.env.JWT_SECRET , {
         expiresIn : "5m"
     }
   );
@@ -14,7 +15,7 @@ const createAccessToken = (user) => {
 const createRefreshToken = (user) => {
     const refreshToken = sign(
       { adi: user.adi, id: user.id , departman: user.departman  , isAdmin: user.isAdmin},
-      "jwtsecretplschange" 
+      process.env.JWT_SECRET 
     );
   
     return refreshToken;
@@ -29,7 +30,7 @@ const validateToken = (req, res, next) => {
   }
   if (accessToken){
     try {
-        const validToken = verify(accessToken, "jwtsecretplschange");
+        const validToken = verify(accessToken, process.env.JWT_SECRET);
         if (validToken) {
           req.authenticated = true;
           return next();
@@ -50,7 +51,7 @@ const validateAdmin = (req,res,next) => {
   }
   if (accessToken){
     try {
-        const validToken = verify(accessToken, "jwtsecretplschange");
+        const validToken = verify(accessToken, process.env.JWT_SECRET);
         
         if (validToken.isAdmin) {
           req.authenticated = true;
