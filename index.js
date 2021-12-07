@@ -279,7 +279,7 @@ app.post('/auth/currentUser' , async(req,res) => {
       const refreshToken = req.cookies["refresh-token"];
       
       if(refreshToken){
-          const decodedToken = await jwt.verify(refreshToken , "jwtsecretplschange")
+          const decodedToken = await jwt.verify(refreshToken , process.env.JWT_SECRET)
 
           res.send(decodedToken)
       }else{
