@@ -4,7 +4,7 @@ const app = express();
 const mysql = require('mysql2');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { createRefreshToken , validateToken, validateAdmin } = require('./controllers/auth');
 const jwt = require('jsonwebtoken')
 require('dotenv').config();
@@ -20,7 +20,7 @@ const promisePool = db.promise();
 // API'IN KULLANDIĞI MODULLER
 
 app.use(cors({
-  origin:'http://localhost:3000',
+  origin:'*',
   preflightContinue: true,
   credentials: true,
 }));
@@ -237,7 +237,7 @@ app.post('/api/insert/gorusme' ,validateToken,(req , res) => {
 
 
 // SERVER PORT
-app.listen(3001 , () => {
+app.listen(process.env.PORT || 3001 , () => {
     console.log("Working on port 3001");
 })
 
