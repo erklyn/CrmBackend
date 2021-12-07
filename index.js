@@ -20,7 +20,7 @@ const promisePool = db.promise();
 // API'IN KULLANDIĞI MODULLER
 
 app.use(cors({
-  origin:'127.0.0.1:3000',
+  origin:'http://localhost:3000',
   preflightContinue: true,
   credentials: true,
 }));
