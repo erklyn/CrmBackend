@@ -7,14 +7,14 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const { createRefreshToken , validateToken, validateAdmin } = require('./controllers/auth');
 const jwt = require('jsonwebtoken')
+require('dotenv').config();
 
 //SERVER CONFİG
 const db = mysql.createPool({
-    host: "localhost",
+    host: process.env.DB_HOST,
     user: "root",
-    password: "password",
-    database: "crmDb",
-    
+    password: process.env.DB_ROOT_PASSWORD,
+    database: process.env.DB_NAME,
 });
 const promisePool = db.promise();
 // API'IN KULLANDIĞI MODULLER
