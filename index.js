@@ -20,7 +20,7 @@ const promisePool = db.promise();
 // API'IN KULLANDIĞI MODULLER
 
 app.use(cors({
-  origin:['http://localhost:3000','https://stupefied-pare-7c12e3.netlify.app'],
+  origin:['192.168.135.126'],
   preflightContinue: true,
   credentials: true,
 }));
