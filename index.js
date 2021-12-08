@@ -20,7 +20,7 @@ const promisePool = db.promise();
 // API'IN KULLANDIĞI MODULLER
 
 app.use(cors({
-  origin:'http://localhost:3000',
+  origin:['http://localhost:3000','https://elastic-bhabha-3c722f.netlify.app'],
   preflightContinue: true,
   credentials: true,
 }));
