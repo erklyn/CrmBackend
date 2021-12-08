@@ -4,7 +4,7 @@ const app = express();
 const mysql = require('mysql2');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { createRefreshToken , validateToken, validateAdmin } = require('./controllers/auth');
 const jwt = require('jsonwebtoken')
 require('dotenv').config();
@@ -20,13 +20,16 @@ const promisePool = db.promise();
 // API'IN KULLANDIĞI MODULLER
 
 app.use(cors({
-  origin:'http://localhost:3000',
+  origin:['http://localhost:3000','https://stupefied-pare-7c12e3.netlify.app'],
   preflightContinue: true,
   credentials: true,
 }));
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(cookieParser());
+app.use(cookieParser({
+  proxy : true 
+}));
+
 
 
 // ------------------------------------------ DATA OKUMA -------------------------------------- \\
@@ -40,7 +43,6 @@ app.use(cookieParser());
 
 app.get('/api/musteriler/:id' ,validateToken, (req, res) => {
   const sqlSelect = 'SELECT * FROM musteri WHERE id= "'+req.params.id+'";'
-  
   db.query(sqlSelect , (err , result) => {
     res.send(result)
   });
@@ -145,6 +147,14 @@ app.get('/api/get/gorusme/:id' ,validateToken, (req, res) => {
     
   })
 })
+// TEK MÜŞTERİ ÇEKME
+app.get('/api/get/singleGorusme/:id' ,validateToken, (req, res) => {
+  const sqlSelect = 'SELECT * FROM gorusme WHERE id = "'+req.params.id+'"'
+  db.query(sqlSelect , (err , result) => {
+    res.send(result)
+    
+  })
+})
 
 // GÖRÜŞMELERİ TARİHE GÖRE ÇEKME
 app.get('/api/get/gorusmeler' ,validateToken, (req, res) => {
@@ -166,7 +176,7 @@ app.get('/api/get/gorusmeler' ,validateToken, (req, res) => {
 // YENİ MÜŞTERİ EKLEME
 app.post('/api/insert/musteri' ,validateToken, (req , res ) =>{
   
-  const sqlInsert = "INSERT INTO musteri (firmaAdi, firmaIlgilisi , firmaAdresi , firmaMail , firmaSehir , firmaUlke,firmaTelefon,firmaAractipi , temsilciID, temsilciAdi) VALUES (?,?,?,?,?,?,?,?,?,?);"
+  const sqlInsert = "INSERT INTO musteri (firmaAdi, firmaIlgilisi , firmaAdresi , firmaMail , firmaSehir , firmaUlke,firmaTelefon,firmaAractipi , temsilciID, temsilciAdi,musteriRisk) VALUES (?,?,?,?,?,?,?,?,?,?,?);"
 
   const firmaAdi = req.body.values.firmaAdi
   const firmaIlgilisi = req.body.values.firmaIlgilisi
@@ -178,9 +188,10 @@ app.post('/api/insert/musteri' ,validateToken, (req , res ) =>{
   const firmaTelefon = req.body.values.firmaTelefon
   const temsilciID = req.body.values.temsilciID
   const temsilciAdi = req.body.values.temsilciAdi
+  const musteriRisk = req.body.values.musteriRisk
 
  
-  db.query(sqlInsert , [firmaAdi,firmaIlgilisi,firmaAdresi,firmaMail,firmaSehir,firmaUlke,firmaTelefon,firmaAracTipi,temsilciID, temsilciAdi],(err, result)=>{
+  db.query(sqlInsert , [firmaAdi,firmaIlgilisi,firmaAdresi,firmaMail,firmaSehir,firmaUlke,firmaTelefon,firmaAracTipi,temsilciID, temsilciAdi,musteriRisk],(err, result)=>{
     console.log(err)
   });
 })
@@ -217,7 +228,7 @@ app.post('/api/insert/teklif' ,validateToken, (req , res ) => {
 
 
 app.post('/api/insert/gorusme' ,validateToken,(req , res) => {
-  const sqlInsertGorusme = "INSERT INTO gorusme (tarih , konusu , ozet ,musteriID , temsilciID ,temsilciAdi) VALUES (?,?,?,?,?,?);"
+  const sqlInsertGorusme = "INSERT INTO gorusme (tarih , konusu , ozet ,musteriID , temsilciID ,temsilciAdi ,aracTipi) VALUES (?,?,?,?,?,?,?);"
 
   const tarih = req.body.values.gorusmeTarihi
   const konusu = req.body.values.gorusmeKonusu
@@ -225,6 +236,7 @@ app.post('/api/insert/gorusme' ,validateToken,(req , res) => {
   const musteriID = req.body.values.musteriID
   const temsilciID = req.body.values.temsilciID
   const temsilciAdi = req.body.values.temsilciAdi
+  const aracTipi = req.body.values.aractipi
 
 
   db.query(sqlInsertGorusme , [tarih , konusu , ozet ,musteriID,temsilciID,temsilciAdi],(err, result)=>{
@@ -237,7 +249,7 @@ app.post('/api/insert/gorusme' ,validateToken,(req , res) => {
 
 
 // SERVER PORT
-app.listen(3001 , () => {
+app.listen(process.env.PORT || 3001 , () => {
     console.log("Working on port 3001");
 })
 
