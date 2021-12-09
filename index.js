@@ -20,7 +20,7 @@ const promisePool = db.promise();
 // API'IN KULLANDIĞI MODULLER
 
 app.use(cors({
-  origin:['192.168.135.126'],
+  origin:['192.168.135.126','http://localhost:3000'],
   preflightContinue: true,
   credentials: true,
 }));
@@ -240,6 +240,28 @@ app.post('/api/insert/gorusme' ,validateToken,(req , res) => {
 
 
   db.query(sqlInsertGorusme , [tarih , konusu , ozet ,musteriID,temsilciID,temsilciAdi],(err, result)=>{
+    console.log(err)
+  });
+
+})
+
+app.post('/api/update/musteri/:id' ,validateToken,(req , res) => {
+  const sqlInsert = "UPDATE musteri SET firmaAdi = ?, firmaIlgilisi = ?, firmaAdresi = ?, firmaMail = ?, firmaSehir = ?, firmaUlke = ?,firmaTelefon = ?, firmaAractipi = ?, temsilciID = ?, temsilciAdi = ?, musteriRisk = ? WHERE id ="+req.params.id+";"
+
+  const firmaAdi = req.body.values.firmaAdi
+  const firmaIlgilisi = req.body.values.firmaIlgilisi
+  const firmaAdresi = req.body.values.firmaAdresi
+  const firmaMail = req.body.values.firmaMail
+  const firmaSehir = req.body.values.firmaSehir
+  const firmaUlke = req.body.values.firmaUlke
+  const firmaAracTipi = req.body.values.firmaAractipi
+  const firmaTelefon = req.body.values.firmaTelefon
+  const temsilciID = req.body.values.temsilciID
+  const temsilciAdi = req.body.values.temsilciAdi
+  const musteriRisk = req.body.values.musteriRisk
+
+ 
+  db.query(sqlInsert , [firmaAdi,firmaIlgilisi,firmaAdresi,firmaMail,firmaSehir,firmaUlke,firmaTelefon,firmaAracTipi,temsilciID, temsilciAdi,musteriRisk],(err, result)=>{
     console.log(err)
   });
 
