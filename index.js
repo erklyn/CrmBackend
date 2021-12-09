@@ -271,7 +271,7 @@ app.post('/api/update/musteri/:id' ,validateToken,(req , res) => {
 
 
 // SERVER PORT
-app.listen(process.env.PORT || 3001 , () => {
+app.listen(process.env.PORT || 8800 , () => {
     console.log("Working on port 3001");
 })
 
@@ -280,7 +280,7 @@ app.listen(process.env.PORT || 3001 , () => {
 
 
 
-app.post('/auth/register' ,validateAdmin, (req , res ) => {
+app.post('/api/register' ,validateAdmin, (req , res ) => {
 
 
   const sqlInsertTemsilci = "INSERT INTO temsilci (adi , soyadi ,departman , mail , username , password ) VALUES (?,?,?,?,?,?);"
