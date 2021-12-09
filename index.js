@@ -239,7 +239,7 @@ app.post('/api/insert/gorusme' ,validateToken,(req , res) => {
   const aracTipi = req.body.values.aractipi
 
 
-  db.query(sqlInsertGorusme , [tarih , konusu , ozet ,musteriID,temsilciID,temsilciAdi],(err, result)=>{
+  db.query(sqlInsertGorusme , [tarih , konusu , ozet ,musteriID,temsilciID,temsilciAdi,aracTipi],(err, result)=>{
     console.log(err)
   });
 
