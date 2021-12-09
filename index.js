@@ -308,7 +308,7 @@ app.post('/auth/register' ,validateAdmin, (req , res ) => {
 
 })
 
-app.post('/auth/currentUser' , async(req,res) => {
+app.post('/api/currentUser' , async(req,res) => {
 
       const refreshToken = req.cookies["refresh-token"];
       
@@ -322,7 +322,7 @@ app.post('/auth/currentUser' , async(req,res) => {
 
 });
 
-app.post('/auth/login' , async (req,res) => {
+app.post('/api/login' , async (req,res) => {
   const { username , password } = req.body.values;
   const sqlSelect = 'SELECT * FROM temsilci WHERE username ="'+username+'";'
   let [user , fields] = await promisePool.query(sqlSelect);
@@ -362,7 +362,7 @@ app.post('/auth/login' , async (req,res) => {
     });
 
 
-app.get("/auth/logout", validateToken, (req, res) => {
+app.get("/api/logout", validateToken, (req, res) => {
   res.cookie("refresh-token", '', {maxAge: 0});
 
       res.status(200).json("You logged out successfully.");
