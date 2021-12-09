@@ -20,7 +20,7 @@ const promisePool = db.promise();
 // API'IN KULLANDIĞI MODULLER
 
 app.use(cors({
-  origin:['192.168.135.126','http://localhost:3000'],
+  origin:['http://192.168.135.126','http://localhost:3000'],
   preflightContinue: true,
   credentials: true,
 }));
@@ -271,7 +271,7 @@ app.post('/api/update/musteri/:id' ,validateToken,(req , res) => {
 
 
 // SERVER PORT
-app.listen(process.env.PORT || 8800 , () => {
+app.listen(process.env.PORT || 3001 , () => {
     console.log("Working on port 3001");
 })
 
