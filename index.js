@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const { createRefreshToken , validateToken, validateAdmin } = require('./controllers/auth');
 const jwt = require('jsonwebtoken')
+const morgan = require('morgan');
 require('dotenv').config();
 
 //SERVER CONFİG
@@ -29,6 +30,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser({
   proxy : true 
 }));
+app.use(morgan('dev'))
 
 
 
@@ -41,7 +43,7 @@ app.use(cookieParser({
 // TEK MÜŞTERİ QUERY
 
 
-app.get('/api/musteriler/:id' ,validateToken, (req, res) => {
+app.get('/api/musteri/:id' ,validateToken, (req, res) => {
   const sqlSelect = 'SELECT * FROM musteri WHERE id= "'+req.params.id+'";'
   db.query(sqlSelect , (err , result) => {
     res.send(result)
@@ -51,7 +53,7 @@ app.get('/api/musteriler/:id' ,validateToken, (req, res) => {
 
 // TEKLİF QUERY 
 
-app.get('/api/get/teklifler/' ,validateToken, (req, res) => {
+app.get('/api/teklif/main' ,validateToken, (req, res) => {
   const sqlSelect = 'SELECT * FROM teklif ORDER BY teklifTarih DESC LIMIT 20 ;'
   
   db.query(sqlSelect , (err , result) => {
@@ -61,7 +63,7 @@ app.get('/api/get/teklifler/' ,validateToken, (req, res) => {
 
 
 //TEKLİF QUERY WİTH MUSTERİ ID 
-app.get('/api/get/teklif/:id' ,validateToken, (req, res) => {
+app.get('/api/teklif/belong/:id' ,validateToken, (req, res) => {
   const sqlSelect = 'SELECT * FROM teklif WHERE musteriID= "'+req.params.id+'";'
   
   db.query(sqlSelect , (err , result) => {
@@ -69,7 +71,7 @@ app.get('/api/get/teklif/:id' ,validateToken, (req, res) => {
   });
 });
 //TAMAMLANMAMIŞ VEYA RED TEKLİFLER 
-app.get('/api/get/teklifRed' ,validateToken, (req, res) => {
+app.get('/api/teklif/red' ,validateToken, (req, res) => {
   
   const sqlSelect = 'SELECT * FROM teklif WHERE durum IN ("Beklemede" , "Red") ORDER BY teklifTarih DESC LIMIT 20'
   
@@ -79,7 +81,7 @@ app.get('/api/get/teklifRed' ,validateToken, (req, res) => {
   });
 });
 //TEKLİF QUERY WİTH ID
-app.get('/api/get/tekteklif/:id' ,validateToken, (req, res) => {
+app.get('/api/teklif/:id' ,validateToken, (req, res) => {
   const sqlSelect = 'SELECT * FROM teklif WHERE id = "'+req.params.id+'";'
   
   db.query(sqlSelect , (err , result) => {
@@ -90,7 +92,7 @@ app.get('/api/get/tekteklif/:id' ,validateToken, (req, res) => {
 
 // TÜM MÜŞTERİLERİ ÇEKME
 
-app.get('/api/get' ,validateToken, (req, res) => {
+app.get('/api/musteri' ,validateToken, (req, res) => {
   const sqlSelect = 'SELECT * FROM musteri ORDER BY firmaAdi ASC'
   db.query(sqlSelect , (err , result) => {
     
@@ -100,17 +102,10 @@ app.get('/api/get' ,validateToken, (req, res) => {
 
 
 
-//MÜŞTERİ ŞEHRİNE GÖRE
-app.get('/api/get/firmaSehir/:sehir' ,validateToken, (req, res) => {
-  const sqlSelect = 'SELECT * FROM musteri WHERE firmaSehir = "'+req.params.sehir+'"';
-  db.query(sqlSelect , (err , result) => {
-    res.send(result)
-   
-  })
-})
+
 
 //MÜŞTERİ ADINA GÖRE
-app.get('/api/get/firmaAdi/:isim' ,validateToken, (req, res) => {
+app.get('/api/musteri/name/:isim' ,validateToken, (req, res) => {
   const sqlSelect = 'SELECT * FROM musteri WHERE firmaAdi = "'+req.params.isim+'"'
   db.query(sqlSelect , (err , result) => {
     res.send(result)
@@ -119,18 +114,10 @@ app.get('/api/get/firmaAdi/:isim' ,validateToken, (req, res) => {
   })
 })
 
-//MÜŞTERİ ARAÇ TİPİNE GÖRE
-app.get('/api/get/firmaAractipi/:arac' ,validateToken, (req, res) => {
-  const sqlSelect = 'SELECT * FROM musteri WHERE firmaAractipi = "'+req.params.arac+'"'
-  db.query(sqlSelect , (err , result) => {
-    res.send(result)
-    
 
-  })
-})
 
 // TEMSİLCİ ÇEKME 
-app.get('/api/get/temsilci/:id' ,validateToken, (req, res) => {
+app.get('/api/temsilci/:id' ,validateToken, (req, res) => {
   const sqlSelect = 'SELECT * FROM temsilci WHERE id = "'+req.params.id+'"'
   db.query(sqlSelect , (err , result) => {
     res.send(result)
@@ -140,7 +127,7 @@ app.get('/api/get/temsilci/:id' ,validateToken, (req, res) => {
 })
 
 // GÖRÜŞMELERİ ÇEKME
-app.get('/api/get/gorusme/:id' ,validateToken, (req, res) => {
+app.get('/api/gorusme/belong/:id' ,validateToken, (req, res) => {
   const sqlSelect = 'SELECT * FROM gorusme WHERE musteriID = "'+req.params.id+'"'
   db.query(sqlSelect , (err , result) => {
     res.send(result)
@@ -148,7 +135,7 @@ app.get('/api/get/gorusme/:id' ,validateToken, (req, res) => {
   })
 })
 // TEK MÜŞTERİ ÇEKME
-app.get('/api/get/singleGorusme/:id' ,validateToken, (req, res) => {
+app.get('/api/gorusme/:id' ,validateToken, (req, res) => {
   const sqlSelect = 'SELECT * FROM gorusme WHERE id = "'+req.params.id+'"'
   db.query(sqlSelect , (err , result) => {
     res.send(result)
@@ -157,14 +144,14 @@ app.get('/api/get/singleGorusme/:id' ,validateToken, (req, res) => {
 })
 
 // GÖRÜŞMELERİ TARİHE GÖRE ÇEKME
-app.get('/api/get/gorusmeler' ,validateToken, (req, res) => {
-  const sqlSelect = 'SELECT * FROM gorusme ORDER BY tarih DESC LIMIT 20 '
+
+app.get('/api/homepage/main' ,validateToken, (req, res) => {
+  const sqlSelect = 'SELECT * FROM gorusme ORDER BY id DESC LIMIT 20 ;'
+  
   db.query(sqlSelect , (err , result) => {
     res.send(result)
-    
-  })
-})
-
+  });
+});
 
 
 
@@ -174,7 +161,7 @@ app.get('/api/get/gorusmeler' ,validateToken, (req, res) => {
 
 
 // YENİ MÜŞTERİ EKLEME
-app.post('/api/insert/musteri' ,validateToken, (req , res ) =>{
+app.post('/api/musteri' ,validateToken, (req , res ) =>{
   
   const sqlInsert = "INSERT INTO musteri (firmaAdi, firmaIlgilisi , firmaAdresi , firmaMail , firmaSehir , firmaUlke,firmaTelefon,firmaAractipi , temsilciID, temsilciAdi,musteriRisk) VALUES (?,?,?,?,?,?,?,?,?,?,?);"
 
@@ -196,7 +183,7 @@ app.post('/api/insert/musteri' ,validateToken, (req , res ) =>{
   });
 })
 
-app.post('/api/insert/teklif' ,validateToken, (req , res ) => {
+app.post('/api/teklif' ,validateToken, (req , res ) => {
   const sqlInsertTeklif = "INSERT INTO teklif (musteriID , temsilciID ,temsilciAdi,paraBirimi ,odemeSekli , pesinatMiktari, vadeSure, teslimTarihi, teslimYeri , durum, neden , teklifNotu , birimFiyati ,adet , aracTipi ,teklifTarih) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
 
   const musteriID = req.body.values.musteriID
@@ -227,7 +214,7 @@ app.post('/api/insert/teklif' ,validateToken, (req , res ) => {
 
 
 
-app.post('/api/insert/gorusme' ,validateToken,(req , res) => {
+app.post('/api/gorusme' ,validateToken,(req , res) => {
   const sqlInsertGorusme = "INSERT INTO gorusme (tarih , konusu , ozet ,musteriID , temsilciID ,temsilciAdi ,aracTipi) VALUES (?,?,?,?,?,?,?);"
 
   const tarih = req.body.values.gorusmeTarihi
@@ -245,7 +232,7 @@ app.post('/api/insert/gorusme' ,validateToken,(req , res) => {
 
 })
 
-app.post('/api/update/musteri/:id' ,validateToken,(req , res) => {
+app.put('/api/musteri/:id' ,validateToken,(req , res) => {
   const sqlInsert = "UPDATE musteri SET firmaAdi = ?, firmaIlgilisi = ?, firmaAdresi = ?, firmaMail = ?, firmaSehir = ?, firmaUlke = ?,firmaTelefon = ?, firmaAractipi = ?, temsilciID = ?, temsilciAdi = ?, musteriRisk = ? WHERE id ="+req.params.id+";"
 
   const firmaAdi = req.body.values.firmaAdi
@@ -280,7 +267,7 @@ app.listen(process.env.PORT || 3001 , () => {
 
 
 
-app.post('/api/register' ,validateAdmin, (req , res ) => {
+app.post('/api/auth/register' ,validateAdmin, (req , res ) => {
 
 
   const sqlInsertTemsilci = "INSERT INTO temsilci (adi , soyadi ,departman , mail , username , password ) VALUES (?,?,?,?,?,?);"
@@ -308,7 +295,7 @@ app.post('/api/register' ,validateAdmin, (req , res ) => {
 
 })
 
-app.post('/api/currentUser' , async(req,res) => {
+app.post('/api/auth/currentUser' , async(req,res) => {
 
       const refreshToken = req.cookies["refresh-token"];
       
@@ -322,7 +309,7 @@ app.post('/api/currentUser' , async(req,res) => {
 
 });
 
-app.post('/api/login' , async (req,res) => {
+app.post('/api/auth/login' , async (req,res) => {
   const { username , password } = req.body.values;
   const sqlSelect = 'SELECT * FROM temsilci WHERE username ="'+username+'";'
   let [user , fields] = await promisePool.query(sqlSelect);
@@ -362,7 +349,7 @@ app.post('/api/login' , async (req,res) => {
     });
 
 
-app.get("/api/logout", validateToken, (req, res) => {
+app.get("/api/auth/logout", validateToken, (req, res) => {
   res.cookie("refresh-token", '', {maxAge: 0});
 
       res.status(200).json("You logged out successfully.");
